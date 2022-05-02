@@ -11,7 +11,9 @@ import matplotlib
 from matplotlib import pyplot
 import numpy
 import time
+import tkinter as tk
 
+root = tk.Tk()
 
 radar_file = 'white1.radar'
 lidar_file = 'white1.lidar'
@@ -68,7 +70,7 @@ matplotlib.pyplot.imshow(radar_file)
 
 
 
-
+root.mainloop()
 
 
 
