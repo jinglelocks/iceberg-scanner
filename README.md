@@ -79,7 +79,7 @@
  the mass density of ice is 900 kg/m3. The total mass of the iceberg (above and below water) is then calculated from 
  this by multiplying by 10 (as 10% is above water). The total volume is found in the same way by multiplying the volume 
  variable by 10. An If statement then outputs a "tow-ability" report based on the total mass. If the value is greater 
- than or equal to 36000000, the iceberg is reported as non-towable, else is is reported as tow-able. The total mass, 
+ than or equal to 36,000,000 kg, the iceberg is reported as non-towable, else it is reported as tow-able. The total mass, 
  volume and tow-ability report are then saved to an iceberg_report.txt file within the sourcecode directory.
 
 "Show radar" and "Show lidar" buttons run functions that make use of numpy.loadtxt and matplotlib.imshow to plot the 
