@@ -5,23 +5,23 @@ Created on Tue Apr 26 21:51:49 2022
 @author: alexa
 """
 import csv
-import numpy
-import matplotlib
-import time
-import tkinter as tk
+import numpy # numpy arrays used in place of lists in this code for efficiency
+import matplotlib # library for plotting the radar and lidar data
+import time # used for timing the code to make it more efficient
+import tkinter as tk # used to create the GUI (must enable Tkinter backend graphic display in IDE)
 
-root = tk.Tk()
-root.title("White Star Line Iceberg Scanner")
-root.geometry('900x200')
+root = tk.Tk() # initialise a Tk GUI "frame" window
+root.title("White Star Line - Iceberg Scanner") # title in the top bar of the GUI
+root.geometry('900x200') # set dimensions of the GUI window, found by playing with widget size and layout during development
 
-def scan_iceberg(radar_file, lidar_file):
-    start = time.time()
-    with open(radar_file, 'r'): # with open
-        radar_array = numpy.loadtxt(radar_file, delimiter = ",")
+def scan_iceberg(radar_file, lidar_file): # function to scan the iceberg, takes two arguments: the white1.radar and white1.lidar files
+    start = time.time() # getting the start time of the run for testing purposes
+    with open(radar_file, 'r'): # using with open removes the need to file.close when done
+        radar_array = numpy.loadtxt(radar_file, delimiter = ",") # using numpy library numpy.loadtxt to load radar file csv
         radar_array = radar_array.astype('int32')
     #print(data_array)
     #print(type(data_array))
-    #print("dimensions of data array:",data_array.ndim)
+    #print("dimensions of data array:",data_array.ndim) #
     #print("shape of data array:",data_array.shape) # make a check to see if they are the same shape
     #rows, columns = data_array.shape
     #print("# of rows:",rows)
@@ -85,12 +85,6 @@ def show_lidar(lidar_file):
         lidar_array = numpy.loadtxt(lidar_file, delimiter = ",")
         lidar_array = lidar_array.astype('int32')  
         matplotlib.pyplot.imshow(lidar_array)
-        
-def save_file(): # unused, couldn't get the report variable out of the scan_iceberg function without using a global variable
-    report = scan_iceberg(radar_file, lidar_file) # idea was to show the "Save file" button at the end of the scan_iceberg run.
-    with open('report.txt', 'w', newline='') as report_file:
-        writer = csv.writer(report_file, delimiter=',')
-        writer.writerow(report)
 
 def quit_scanner():
     root.quit()     # stops mainloop
@@ -99,24 +93,9 @@ def quit_scanner():
 # define radar and lidar input files
 radar_file = 'white1.radar'
 lidar_file = 'white1.lidar'
-
-"""
-class My_Button(tk.Button):
-    def __init__(self, text, row, col, command, color=None, **kwargs):
-        self.text = text
-        self.row = row
-        self.column = col
-        self.command = command
-        self.color = color
-        super().__init__()
-        self['bg'] = self.color
-        self['text'] = self.text
-        self['command'] = self.command
-        self.grid(row=self.row, column=self.column)
-"""
-                    
+            
 # setting button and label widgets                    
-button_scan = tk.Button(root, text="Scan Iceberg", height=5, width=30, command=save_file)
+button_scan = tk.Button(root, text="Scan Iceberg", height=5, width=30, command=lambda: scan_iceberg(radar_file, lidar_file))
 button_radar = tk.Button(root, text="Show radar image", height=5, width=30, command=lambda: show_radar(radar_file))
 button_lidar = tk.Button(root, text="Show lidar image", height=5, width=30, command=lambda: show_lidar(lidar_file))
 button_quit = tk.Button(root, text="Quit", height=5, width=30, command=quit_scanner)
@@ -140,6 +119,15 @@ result_report.grid(row=4,column=0,columnspan=4)
 
 root.mainloop()
 
+
+
+"""    
+def save_file(): # unused, couldn't get the report variable out of the scan_iceberg function without using a global variable
+    report = scan_iceberg(radar_file, lidar_file) # idea was to show the "Save file" button at the end of the scan_iceberg run.
+    with open('report.txt', 'w', newline='') as report_file:
+        writer = csv.writer(report_file, delimiter=',')
+        writer.writerow(report)
+"""
 
 """
 fig = matplotlib.pyplot.figure(figsize=(5, 4), dpi=100)

@@ -1,8 +1,19 @@
-# Alexander Camilleri - GEOG5003M - Assignment 2 - Independent Project
+--------------------
+# Alexander Camilleri - GEOG5003M - Assignment 2 - Independent Project - "White Star Line"
  This project was undertaken during the Programming for Geographical Information Analysis module 
- as part of the Geographic Information Science MSc program at the University of Leeds, UK.
+ as part of the Geographic Information Science MSc programme at the University of Leeds, UK.
  
-# White Star Line
+--------------------
+# Contents
+ 1. Background
+ 2. Data
+ 3. Requested functionality
+ 4. Installation/setup
+ 5. Using the program
+ 6. How it works
+
+--------------------
+# 1. Background
  The outline scenario was given as follows:
  "Imagine that you are working for the White Star Line shipping company and you want, more 
  from historical paranoia than any real need, to send out an iceberg-towing tug with all 
@@ -11,16 +22,18 @@
  "You want to combine two data files (lidar and radar) to spot icebergs and assess their mass.
  If an iceberg has a mass greater than 36 million kg, it will not be tow-able".
  
-# Data
+--------------------
+# 2. Data
  Two example scenarios were given, with a single satellite radar and a single airborn lidar data 
  file for each. The first and simplest scenario involved an area of sea, 300m by 300m, with a single 
  iceberg. The second was an area of the same size containing multiple icebergs.
  
  The values of the radar data were per m2, between 0 and 255, representing the texture of the registered
- object/s. With values of 100 or greater representing ice. The values of the lidar were also between 0
+ object/s, with values of 100 or greater representing ice. The values of the lidar were also between 0
  and 255, such that a single unit equated to 10cm of height, and 0 is the water level.
- 
-# Requested functionality
+
+--------------------
+# 3. Requested functionality
  The task was set to build a program to do the following:
  1. Pull in the two data files and display them.
  2. Assess which areas of the image are ice using the radar data.
@@ -29,14 +42,16 @@
  5. Display the total mass, the total volume and whether you can pull the berg on the GUI.
  6. Save the above information to a file.
 
-# Installation/setup
+--------------------
+# 4. Installation/setup
  This program assumes the user has installed Python 3.9 on their machine and is familiar with running 
  Python source code. It is dependent on the following packages: csv, numpy, matplotlib, time and tkinter.
  Ensure the script.py, white1.lidar and white1.radar files are in the same working directory.
  Open the script file in any Python IDE which is set up to use Tkinter backend graphical display.
  Run the script.
- 
-# Using the program
+
+--------------------
+# 5. Using the program
  A GUI with four buttons will show: Scan iceberg, Show radar image, Show lidar image and Quit.
  "Scan iceberg" will run the scan_iceberg function then print the following information underneath the buttons:
  total mass of iceberg, total volume, and whether or not the iceberg is tow-able. It will also save a report of
@@ -44,20 +59,22 @@
  "Show radar image" will display an image plot of the radar data in a new window.
  "Show lidar image" will do the same as above respectively.
  "Quit" will stop the script and close the GUI.
- 
-# How it works
- The "Scan iceberge" button runs the scan_iceberg function, which will create a numpy array from the white1.radar 
+
+--------------------
+# 6. How it works
+ The "Scan iceberg" button runs the scan_iceberg function, which will create a numpy array from the white1.radar 
  file and search it for values equal to or greater than 100 (ice). The positions of those values are indexed in a 
  2d numpy array ([0] being x and [1] being y values), which are iterated through to find height values at index[0][i] 
  and index[1][i] in a numpy array made from the white1.lidar file. Each height value is converted to metres then added
  to a volume variable that sits outside of the loop to track the total volume of the iceberg (since each ice pixel is 
- 1x1, the height values can simply be summed to obtain volume in m3). The volume variable is used to calculate the 
- mass of the iceberg above the water using mass = volume x density, given the mass density of ice is 900 kg/m3. The 
- total mass of the iceberg (above and below water) is then calculated from this by multiplying by 10 (as 10% is above 
- water). The total volume is found in the same way by multiplying the volume variable by 10. An If statement then 
- outputs a "tow-ability" report based on the total mass. If the value is greater than or equal to 36000000, the 
- iceberg is reported as non-towable, else is is reported as tow-able. The total mass, volume and tow-ability report 
- are then saved to an iceberg_report.txt file within the sourcecode directory.
+ 1x1, the height values can simply be summed to obtain volume in m3). 
  
- "Show radar" and "Show lidar" buttons run functions that make use of numpy.loadtxt and matplotlib.imshow to plot the 
+ The volume variable is used to calculate the mass of the iceberg above the water using mass = volume x density, given 
+ the mass density of ice is 900 kg/m3. The total mass of the iceberg (above and below water) is then calculated from 
+ this by multiplying by 10 (as 10% is above water). The total volume is found in the same way by multiplying the volume 
+ variable by 10. An If statement then outputs a "tow-ability" report based on the total mass. If the value is greater 
+ than or equal to 36000000, the iceberg is reported as non-towable, else is is reported as tow-able. The total mass, 
+ volume and tow-ability report are then saved to an iceberg_report.txt file within the sourcecode directory.
+
+"Show radar" and "Show lidar" buttons run functions that make use of numpy.loadtxt and matplotlib.imshow to plot the 
  radar and lidar files as an image in a window separate to the GUI.
