@@ -46,7 +46,7 @@
  "Quit" will stop the script and close the GUI.
  
 # How it works
- The "Scan iceberg" button runs the scan_iceberg function, which will create a numpy array from the white1.radar 
+ The "Scan iceberge" button runs the scan_iceberg function, which will create a numpy array from the white1.radar 
  file and search it for values equal to or greater than 100 (ice). The positions of those values are indexed in a 
  2d numpy array ([0] being x and [1] being y values), which are iterated through to find height values at index[0][i] 
  and index[1][i] in a numpy array made from the white1.lidar file. Each height value is converted to metres then added

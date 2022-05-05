@@ -5,12 +5,8 @@ Created on Tue Apr 26 21:51:49 2022
 @author: alexa
 """
 import csv
-import rasterio
-from rasterio.plot import show
-import matplotlib
-from matplotlib import pyplot
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
 import numpy
+import matplotlib
 import time
 import tkinter as tk
 
@@ -18,33 +14,31 @@ root = tk.Tk()
 root.title("White Star Line Iceberg Scanner")
 root.geometry('900x200')
 
-def iceberg_scan(radar_file, lidar_file):
+def scan_iceberg(radar_file, lidar_file):
     start = time.time()
-    raw_data = open(radar_file, 'r')
-    data_array = numpy.loadtxt(raw_data, delimiter = ",")
-    raw_data.close
-    data_array = data_array.astype('int32')
+    with open(radar_file, 'r'): # with open
+        radar_array = numpy.loadtxt(radar_file, delimiter = ",")
+        radar_array = radar_array.astype('int32')
     #print(data_array)
     #print(type(data_array))
-    print("start of array check")
-    print("dimensions of data array:",data_array.ndim)
-    print("shape of data array:",data_array.shape) # make a check to see if they are the same shape
+    #print("dimensions of data array:",data_array.ndim)
+    #print("shape of data array:",data_array.shape) # make a check to see if they are the same shape
     #rows, columns = data_array.shape
     #print("# of rows:",rows)
     #print("# of columns:",columns)
     #print(data_array[data_array >= 100])
-    result = numpy.where(data_array >= 100)
-    #print(result)
-    #result = numpy.where(data_array >= 0)
-    #print("x values:",result[0])
-    #print("y values:",result[1])
-    #list_of_coords = list(zip(result[0], result[1]))
+    ice_positions = numpy.where(radar_array >= 100) # stores the coordinates of values >= 100 in a 2d array, where [0] is array of "x values" and [1] is array of "y values"
+    #print(ice_positions) # visualising the coordinates array
+    #ice_positions = numpy.where(data_array >= 0)
+    #print("x values:",ice_positions[0])
+    #print("y values:",ice_positions[1])
+    #list_of_coords = list(zip(ice_positions[0], ice_positions[1]))
     #print(list_of_coords)
     #return list_of_coords
     volume = 0
-    for i in range(len(result[0])): # iterate through all positions within the x array of the result 2d array (same dimensionality as y)
-        x = result[0][i] # ith value in the x array
-        y = result[1][i] # ith value in the y array
+    for i in range(len(ice_positions[0])): # iterate through all positions within the x array of the result 2d array (same dimensionality as y)
+        x = ice_positions[0][i] # ith value in the x array
+        y = ice_positions[1][i] # ith value in the y array
         with open(lidar_file, 'r'): # read lidar data
             lidar_array = numpy.loadtxt(lidar_file, delimiter = ",")
             lidar_array = lidar_array.astype('int32')  
@@ -52,19 +46,29 @@ def iceberg_scan(radar_file, lidar_file):
         #print(height_metres)
         volume = volume + height_metres*1*1 # converting to volume by doing HxWxL
     mass_above_water = volume*900 # mass = volume*density
-    mass_total = 10*mass_above_water # 10% of the mass is above water, so total is 10* that value
-    print("mass above water =",mass_above_water)
-    print("total mass =",mass_total)
+    total_mass = mass_above_water*10 # 10% of the mass is above water, so total is 10* that value
+    #print("mass above water =",mass_above_water)
+    #print("total mass =",total_mass)
     total_volume = volume*10
-    print("total volume =", total_volume)
+    #print("total volume =", total_volume)
     end = time.time()
-    print(end-start) # This version: 76.65096712112427
-    result_mass.config(text="Total mass= "+str(mass_total))
-    result_vol.config(text="Total mass= "+str(total_volume))
-    if mass_total > 36000000:
-        result_pull.config(text="Iceberg mass exceeds limit, tow not possible.")
+    print(end-start) # This version: 74.85s
+    result_mass.config(text="Total mass= "+str(total_mass)+" kg")
+    result_vol.config(text="Total volume= "+str(total_volume)+" m3")
+    if total_mass > 36000000:
+        result = "Iceberg mass exceeds limit, tow not possible."
+        result_pull.config(text=result)
     else:
-        result_pull.config(text="Iceberg mass under limit, tow possible.")
+        result = "Iceberg mass within acceptable limit, tow possible."
+        result_pull.config(text=result)
+    #return ["Total mass = ", total_mass, "Total volume = ", total_volume, result]
+    #button_save.grid(row=1, column=3) # placing the save file button on interface after the calculation has run
+    #global report
+    report = ("Total mass = ", total_mass, "Total volume = ", total_volume, result)
+    with open('iceberg_report.txt', 'w', newline='') as report_file:
+        writer = csv.writer(report_file, delimiter=',')
+        writer.writerow(report)
+    result_report.config(text="Report saved to source code directory.")
         
 def show_radar(radar_file):
     matplotlib.pyplot.ylim(0, 300) #
@@ -80,23 +84,45 @@ def show_lidar(lidar_file):
     with open(lidar_file, 'r'): # read lidar data
         lidar_array = numpy.loadtxt(lidar_file, delimiter = ",")
         lidar_array = lidar_array.astype('int32')  
-        matplotlib.pyplot.imshow(lidar_array) 
+        matplotlib.pyplot.imshow(lidar_array)
         
+def save_file(): # unused, couldn't get the report variable out of the scan_iceberg function without using a global variable
+    report = scan_iceberg(radar_file, lidar_file) # idea was to show the "Save file" button at the end of the scan_iceberg run.
+    with open('report.txt', 'w', newline='') as report_file:
+        writer = csv.writer(report_file, delimiter=',')
+        writer.writerow(report)
+
 def quit_scanner():
     root.quit()     # stops mainloop
-    root.destroy()  # this is necessary on Windows to prevent
-                    # Fatal Python Error: PyEval_RestoreThread: NULL tstate
+    root.destroy()  # "destroys" the tkinter widgets and frame
                     
 # define radar and lidar input files
 radar_file = 'white1.radar'
 lidar_file = 'white1.lidar'
+
+"""
+class My_Button(tk.Button):
+    def __init__(self, text, row, col, command, color=None, **kwargs):
+        self.text = text
+        self.row = row
+        self.column = col
+        self.command = command
+        self.color = color
+        super().__init__()
+        self['bg'] = self.color
+        self['text'] = self.text
+        self['command'] = self.command
+        self.grid(row=self.row, column=self.column)
+"""
                     
 # setting button and label widgets                    
-button_scan = tk.Button(root, text="Scan Iceberg", height=5, width=30, command=lambda: iceberg_scan(radar_file,lidar_file))
+button_scan = tk.Button(root, text="Scan Iceberg", height=5, width=30, command=save_file)
 button_radar = tk.Button(root, text="Show radar image", height=5, width=30, command=lambda: show_radar(radar_file))
 button_lidar = tk.Button(root, text="Show lidar image", height=5, width=30, command=lambda: show_lidar(lidar_file))
 button_quit = tk.Button(root, text="Quit", height=5, width=30, command=quit_scanner)
+button_save = tk.Button(root, text="Save result", height=5, width=30, command=quit_scanner)
 
+# placing buttons on interface grid
 button_scan.grid(row=0,column=0)
 button_radar.grid(row=0,column=1)
 button_lidar.grid(row=0,column=2)
@@ -105,16 +131,14 @@ button_quit.grid(row=0,column=3)
 result_mass = tk.Label(root,text="")
 result_vol = tk.Label(root,text="")
 result_pull = tk.Label(root,text="")
+result_report = tk.Label(root,text="")
 
 result_mass.grid(row=1,column=0,columnspan=4)
 result_vol.grid(row=2,column=0,columnspan=4)
 result_pull.grid(row=3,column=0,columnspan=4)
-
+result_report.grid(row=4,column=0,columnspan=4)
 
 root.mainloop()
-
-
-
 
 
 """
@@ -127,7 +151,7 @@ canvas.draw()
 canvas.get_tk_widget().grid(row=0,column=1)
 """
 
-#iceberg_scan(radar_file, lidar_file)
+#scan_iceberg(radar_file, lidar_file)
 #show_lidar(lidar_file)
 #show_radar(radar_file)
 

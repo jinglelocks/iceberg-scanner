@@ -1,0 +1,1 @@
+Total mass = ,129739500.0,Total volume = ,144155.0,"Iceberg mass exceeds limit, tow not possible."
