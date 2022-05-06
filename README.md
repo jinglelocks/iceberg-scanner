@@ -52,8 +52,8 @@
 # 4. Installation/setup
  This program assumes the user has installed Python 3.9 on their machine and is familiar with running 
  Python source code. It is dependent on the following packages: csv, numpy, matplotlib, time and tkinter.
- Ensure the script.py, white1.lidar and white1.radar files are in the same working directory.
- Open the script file in any Python IDE which is set up to use Tkinter backend graphical display.
+ Ensure that white_star_line.py, white1.lidar and white1.radar files are in the same working directory.
+ Open the .py script in any Python IDE which is set up to use Tkinter backend graphical display.
  Run the script.
 
 --------------------

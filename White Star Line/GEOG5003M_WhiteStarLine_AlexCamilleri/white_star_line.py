@@ -11,7 +11,7 @@ SETUP
 import csv # library to read/write text files
 import numpy # numpy arrays used in place of lists in this code for efficiency
 import matplotlib # library for plotting the radar and lidar data
-#import time # used for timing the code to make it more efficient
+import time # used for timing the code to make it more efficient
 import tkinter as tk # used to create the GUI (must enable Tkinter backend graphic display in IDE)
 
 root = tk.Tk() # initialise a Tk GUI "frame" window
@@ -25,7 +25,7 @@ lidar_file = 'white1.lidar'
 FUNCTIONS
 """
 def scan_iceberg(radar_file, lidar_file): # function to scan the iceberg, takes two arguments: the white1.radar and white1.lidar files
-    #start = time.time() # getting the start time to time the code
+    start = time.time() # getting the start time to time the code
     with open(lidar_file, 'r'): # using 'with open' removes the need to file.close when done
         lidar_array = numpy.loadtxt(lidar_file, delimiter = ",")  # numpy.loadtxt to read lidar file as a numpy array
     with open(radar_file, 'r'):
@@ -35,7 +35,7 @@ def scan_iceberg(radar_file, lidar_file): # function to scan the iceberg, takes 
         #print(numpy.shape(radar_array)) # checking dimensions of radar_array
         
     if numpy.shape(lidar_array) != numpy.shape(radar_array): # adding an error check to make sure the two files are of the same dimension
-        result_report.config(text="Error, the two data files are not of identical shape/dimensionality.") # tested this by using == instead of != since I know the files are of same dimension
+        result_report.config(text="Error, the two data files are not of identical dimension.") # tested this by using == instead of != since I know the files are of same dimension
     else: # if the files are of the same dimension, the iceberg will be assessed
     
         volume = 0 # beginning the volume variable at 0, ready to store sum of volumes gathered during the following loop
@@ -52,8 +52,8 @@ def scan_iceberg(radar_file, lidar_file): # function to scan the iceberg, takes 
         #print("total mass =",total_mass)
         total_volume = 10*volume
         #print("total volume =", total_volume)
-        #end = time.time()
-        #print(end-start) # this version = 0.17 s, previous version = 75 s (see development notes)
+        end = time.time()
+        print(end-start) # this version = 0.17 s
         
         result_mass.config(text="Total mass= "+str(total_mass)+" kg") # sending results to empty labels in the GUI
         result_vol.config(text="Total volume= "+str(total_volume)+" m3")
@@ -85,7 +85,7 @@ def show_lidar(lidar_file): # function to read and display the white1.lidar data
         lidar_array = numpy.loadtxt(lidar_file, delimiter = ",")
         matplotlib.pyplot.imshow(lidar_array)
 
-def quit_scanner(): # function to quit the program and GUI
+def quit_scanner():
     root.quit()     # stops mainloop
     root.destroy()  # "destroys" the tkinter frame and widgets
                     
@@ -105,7 +105,7 @@ button_radar.grid(row=0,column=1) # .pack throws the widget in wherever it will 
 button_lidar.grid(row=0,column=2) # .grid allows definition of placement via relative rows/columns
 button_quit.grid(row=0,column=3)
 
-# defining empty labels to populate with information once the function runs using Label.config(text="")
+# definining empty labels to populate with information once the function runs using Label.config(text="")
 result_mass = tk.Label(root,text="")
 result_vol = tk.Label(root,text="")
 result_pull = tk.Label(root,text="")
@@ -122,10 +122,6 @@ root.mainloop() # tkinter mainloop keeps the program running to wait for user in
 """
 END OF PROGRAM
 """
-
-
-
-
 
 """
 Test blocks and cut features
